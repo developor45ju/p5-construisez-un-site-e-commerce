@@ -1,3 +1,5 @@
+// Récupère les données de l'API et affiche dynamiquent sur la page d'accueil du site
+
 fetch("http://localhost:3000/api/products")
     .then(reponse => reponse.json())
     .then(data => {
