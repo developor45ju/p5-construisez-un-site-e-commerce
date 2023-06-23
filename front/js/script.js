@@ -3,7 +3,6 @@
 class Kanaps {
     constructor() {
         this.response = fetch('http://localhost:3000/api/products');
-        this.kanaps = null;
         this.putCardsProducts = "";
     }
 
