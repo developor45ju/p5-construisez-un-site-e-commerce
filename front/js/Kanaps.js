@@ -1,5 +1,5 @@
 // Récupère les données de l'API et affiche dynamiquent sur la page d'accueil du site
-class Kanaps {
+export class Kanaps {
 
     constructor() {
         this.allKanaps;
@@ -29,6 +29,3 @@ class Kanaps {
         return this.allKanaps
     }
 }
-
-const KanapsInstance = new Kanaps();
-KanapsInstance.displayKanaps();
