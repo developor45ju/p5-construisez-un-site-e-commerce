@@ -1,5 +1,5 @@
 // Récupère l'ID du produit et affiche l'image, le nom, le prix, la description et le choix de couleurs, du produit en question, dynamiquement
-export class Product {
+export default class Product {
     
     constructor() {
         this.imgEl = document.createElement('img');
