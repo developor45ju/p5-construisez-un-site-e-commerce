@@ -10,6 +10,9 @@ export default class Product {
         try {
             const product = new URLSearchParams(document.location.search);
             const productId = product.get("id");
+            if (product === null) {
+                return;
+            }
             const response = await fetch(`http://localhost:3000/api/products/${productId}`);
             this.kanapData = await response.json();
 
