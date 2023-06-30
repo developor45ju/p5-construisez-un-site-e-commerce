@@ -1,16 +1,16 @@
 // Récupère les données de l'API et affiche dynamiquent sur la page d'accueil du site
-
 class Kanaps {
+
     constructor() {
-        this.response = fetch('http://localhost:3000/api/products');
+        this.allKanaps;
         this.putCardsProducts = "";
     }
 
     async displayKanaps() {
         try {
-            const RESPONSE = await this.response;   
-            const KANAPS = await RESPONSE.json();
-            KANAPS.forEach(kanap => {
+            const response = await fetch('http://localhost:3000/api/products');
+            this.allKanaps = await response.json();
+            this.allKanaps.forEach(kanap => {
                 this.putCardsProducts += `<a href="./product.html?id=${kanap._id}">
                                             <article>
                                                 <img src="${kanap.imageUrl}" alt="${kanap.altTxt}">
@@ -21,15 +21,14 @@ class Kanaps {
             })
             document.getElementById('items').innerHTML = this.putCardsProducts;
         } catch (error) {
-            error = 'L\'API n\'a pas pu être récupéré';
-            console.error(error);
+            console.error("L'API n'a pas pu être récupéré", error);
         }
     }
 
     getKanaps() {
-        return this.displayKanaps();
+        return this.allKanaps
     }
 }
 
-const ALL_KANAPS = new Kanaps();
-ALL_KANAPS.getKanaps();
+const KanapsInstance = new Kanaps();
+KanapsInstance.displayKanaps();
