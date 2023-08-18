@@ -21,17 +21,6 @@ export default class Product {
             .appendChild(newErrorMessage);
             throw new Error('Le script ne continu pas');
         }
-        /*
-        document.getElementsByClassName('item__content__settings__quantity')[0].innerHTML = `
-        <p id='item__content__settings__quantity__error'>
-            Veuillez choisir une quantité!
-        </p>`
-
-        #item__content__settings__quantity__error {
-            color: red
-        }
-        */
-        
     }
 
     preventFirstIndexColour(colour) {
@@ -53,23 +42,15 @@ export default class Product {
         const btnAddCart = document.getElementById('addToCart');
 
         btnAddCart.addEventListener('click', () => {
-            
-            //let image, title, price
-            //[image, title, price] = [this.kanapData.imageUrl, this.kanapData.name, this.kanapData.price]
-            
-            const image = this.kanapData.imageUrl;
-            const title = this.kanapData.name;
-            const price = this.kanapData.price;
-            const colour = document.getElementById('colors').selectedIndex;
+            const id = this.kanapData._id;
+            const colour = document.getElementById('colors').value;
             const quantity = Number(document.getElementById('quantity').value);
 
             this.preventFirstIndexColour(colour);
             this.preventZeroQuantity(quantity);
 
             const productToAddToCart = {
-                image,
-                title,
-                price,      
+                id,
                 colour,
                 quantity
             };
