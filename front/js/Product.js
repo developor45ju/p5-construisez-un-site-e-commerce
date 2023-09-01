@@ -26,16 +26,28 @@ export default class Product {
     preventFirstIndexColour(colour) {
         const errorMessageId = 'item__content__settings__color__error';
         const errorMessage = document.getElementById(errorMessageId);
-        
+
         if (errorMessage) errorMessage.remove();
-        
-        if (colour === 0) {
-            document.getElementsByClassName('item__content__settings__color')[0].insertAdjacentHTML('beforeend', `
-                <p id="item__content__settings__color__error" style="color: red;">
-                    Veuillez choisir une couleur !
-                </p>`);
+        if (colour == 0) {
+            const newErrorMessage = document.createElement('p');
+            
+            newErrorMessage.textContent = 'Veuillez choisir une couleur!';
+            newErrorMessage.style.color = 'red';
+            newErrorMessage.setAttribute('id', errorMessageId);
+            document.getElementsByClassName('item__content__settings__color')[0]
+            .appendChild(newErrorMessage);
             throw new Error('Le script ne continu pas');
         }
+    }
+
+    createNotification() {
+        document.body.insertAdjacentHTML('afterbegin', `
+            <div id="item__add__product__notification">
+                <p><b>Un article a été ajouté dans le panier</b></p>
+            </div>
+        `)
+        const notificationAddKanap = document.getElementById('item__add__product__notification');
+        setTimeout(() => notificationAddKanap.remove(), 3000);
     }
     
     handleProduct() {
@@ -58,6 +70,7 @@ export default class Product {
             const cart = new Cart();
             cart.addProduct(productToAddToCart);
 
+            this.createNotification();
         });
     }
         
