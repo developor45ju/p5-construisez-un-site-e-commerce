@@ -175,8 +175,23 @@ main {
 	white-space: normal;
 }
 
+#message-notification-succes {
+	position: fixed;
+	right: 10px;
+	bottom: 10px;
+	background-color: green;
+	border-radius: 15px;
+	padding: 10px
+}
 
-
+#message-notification-error {
+	position: fixed;
+	right: 10px;
+	bottom: 10px;
+	background-color: red;
+	border-radius: 15px;
+	padding: 10px
+}
 
 /********/
 /*Footer*/

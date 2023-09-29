@@ -1,4 +1,5 @@
 import Cart from './Cart.js';
+import { createNotification } from './utils.js';
 // Récupère l'ID du produit et affiche l'image, le nom, le prix, la description et le choix de couleurs, du produit en question, dynamiquement
 export default class Product {
     
@@ -40,15 +41,7 @@ export default class Product {
         }
     }
 
-    createNotification() {
-        document.body.insertAdjacentHTML('afterbegin', `
-            <div id="item__add__product__notification">
-                <p><b>Un article a été ajouté dans le panier</b></p>
-            </div>
-        `)
-        const notificationAddKanap = document.getElementById('item__add__product__notification');
-        setTimeout(() => notificationAddKanap.remove(), 3000);
-    }
+
     
     handleProduct() {
         const btnAddCart = document.getElementById('addToCart');
@@ -70,7 +63,7 @@ export default class Product {
             const cart = new Cart();
             cart.addProduct(productToAddToCart);
 
-            this.createNotification();
+            createNotification('Un article a été ajouté dans le panier', true);
         });
     }
         
