@@ -1,9 +1,31 @@
+/**
+ * A class representing the kanaps in the application.
+ */
+
 export default class Kanaps {
 
+    /**
+     * Create a new instence of Kanapps class.
+     */
+
     constructor() {
+        /**
+         * An array containing all the kanaps in the application.
+         * @param { Array }
+         */
         this.allKanaps;
+
+        /**
+         * A string containing the HTML code for the kanaps cards.
+         * @param { String }
+         */
         this.putCardsProducts = "";
     }
+
+    /**
+     * Display the kanaps on the page.
+     * @param { Promise } - A promise that is resolved when the kanaps have been displayed.
+     */
 
     async displayKanaps() {
         try {
@@ -24,6 +46,10 @@ export default class Kanaps {
         }
     }
 
+    /**
+     * Return the array of all kanaps in the application.
+     * @returns { Array } - An array containing all the kanaps in the application.
+     */
     getKanaps() {
         return this.allKanaps
     }
