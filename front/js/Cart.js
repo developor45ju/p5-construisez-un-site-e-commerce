@@ -1,12 +1,19 @@
-import { createNotification } from "./utils.js";
+import { createNotification } from './utils.js';
 
+/**
+ * Handle the diffrents actions in the Cart
+ */
 export default class Cart {
   constructor() {
-    const currentItem = localStorage.getItem("cart");
+    const currentItem = localStorage.getItem('cart');
     this.cart = currentItem === null ? [] : JSON.parse(currentItem);
     this.kanapAPI = [];
   }
 
+  /**
+   * Add an product in the localstorage of navigator
+   * @param { Object } productToAdd - A object containing the color, quantity and id
+   */
   addProduct(productToAdd) {
     const sameProductInCart = this.cart.find(
       (kanapFromLS) =>
@@ -20,13 +27,17 @@ export default class Cart {
       this.cart.push(productToAdd);
     }
 
-    localStorage.setItem("cart", JSON.stringify(this.cart));
+    localStorage.setItem('cart', JSON.stringify(this.cart));
   }
 
+  /**
+   * Fetch all produts in the localstorage in the navigator and the informations API's corresponding at product in the * localstorage. Display products in the cart
+   */
   async displayArticle() {
     try {
-      const articlesFromCart = JSON.parse(localStorage.getItem("cart"));
-      let articles = "";
+      const articlesFromCart = JSON.parse(localStorage.getItem('cart'));
+
+      let articles = '';
       let nbTotalArticle = 0;
       let priceTotal = 0;
       const response = await fetch(`http://localhost:3000/api/products/`);
@@ -70,38 +81,41 @@ export default class Cart {
         priceTotal += Number(price) * Number(kanap.quantity);
       });
 
-      document.getElementById("cart__items").innerHTML = articles;
-      document.getElementById("totalQuantity").textContent = nbTotalArticle;
-      document.getElementById("totalPrice").textContent = priceTotal;
+      document.getElementById('cart__items').innerHTML = articles;
+      document.getElementById('totalQuantity').textContent = nbTotalArticle;
+      document.getElementById('totalPrice').textContent = priceTotal;
 
-      // add listeners for quantity changed
       const inputsQuantity = [
-        ...document.getElementsByClassName("itemQuantity"),
+        ...document.getElementsByClassName('itemQuantity'),
       ];
       inputsQuantity.forEach((DOMinput) =>
-        DOMinput.addEventListener("change", (event) =>
+        DOMinput.addEventListener('change', (event) =>
           this.updateQuantity(event)
         )
       );
       const buttonDeleteArticle = [
-        ...document.getElementsByClassName("deleteItem"),
+        ...document.getElementsByClassName('deleteItem'),
       ];
       buttonDeleteArticle.forEach((DOMbuttom) =>
-        DOMbuttom.addEventListener("click", (event) =>
-          this.deleteArticle(event)
-        )
+        DOMbuttom.addEventListener('click', (event) => {
+          this.deleteArticle(event);
+        })
       );
     } catch (error) {
       console.error(error);
     }
   }
 
+  /**
+   * Update the quantity when the product is delete or modify in the Cart by user
+   * @param { event } event - User's modify or delete a product
+   */
   updateQuantity(event) {
     try {
       const kanapNewQuantity = Number(event.target.value);
       if (kanapNewQuantity < 1) this.deleteArticle(event);
 
-      const kanapParentDomElement = event.target.closest(".cart__item");
+      const kanapParentDomElement = event.target.closest('.cart__item');
       const sameKanapFromLocalstorage = this.cart.find(
         (kanapFormLS) =>
           kanapFormLS.id === kanapParentDomElement.dataset.id &&
@@ -109,7 +123,7 @@ export default class Cart {
       );
 
       sameKanapFromLocalstorage.quantity = kanapNewQuantity;
-      localStorage.setItem("cart", JSON.stringify(this.cart));
+      localStorage.setItem('cart', JSON.stringify(this.cart));
       this.updateTotalQuantity();
       this.updateTotalPrice();
     } catch (error) {
@@ -117,28 +131,32 @@ export default class Cart {
     }
   }
 
+  /**
+   * Delete a product in the Cart
+   * @param { event } event - User's click an delete bottom
+   * @returns - The delete product
+   */
   deleteArticle(event) {
-    // Récupérer l'article au clique
-    const kanapParent = event.target.closest(".cart__item");
+    const kanapParent = event.target.closest('.cart__item');
 
-    // const message = () => )
-    // kanapParent.addEventListener('click', message)
+    if (!window.confirm('Souhaitez-vous supprimer cet article ?')) {
+      return;
+    }
 
     try {
-      // Supprimer l'élément du tableau original
       const deleteElement = (element) =>
         element.id === kanapParent.dataset.id &&
         element.colour === kanapParent.dataset.color;
-      // TODO commenter pourquoi cela ?
       if (deleteElement === -1) {
         return;
       }
 
       const indexToDelete = this.cart.findIndex(deleteElement);
       this.cart.splice(indexToDelete, 1);
-      localStorage.setItem("cart", JSON.stringify(this.cart));
-      // Supprimer l'article du DOM
+      localStorage.setItem('cart', JSON.stringify(this.cart));
       kanapParent.remove();
+
+      createNotification("L'article a bien été supprimé !", true);
 
       this.updateTotalQuantity();
       this.updateTotalPrice();
@@ -147,6 +165,9 @@ export default class Cart {
     }
   }
 
+  /**
+   * Update the total price in the cart
+   */
   updateTotalPrice() {
     let totalPrice = 0;
     try {
@@ -155,86 +176,82 @@ export default class Cart {
           (kanap) => kanap._id === kanapFromLS.id
         );
         const productTotal = Number(kanapFromLS.quantity) * findKanap.price;
-        
+
         totalPrice += productTotal;
       });
 
-      document.getElementById("totalPrice").textContent = totalPrice;
+      document.getElementById('totalPrice').textContent = totalPrice;
     } catch (error) {
       console.error(error);
     }
   }
 
+  /**
+   * Update the total quantity in the cart
+   */
   updateTotalQuantity() {
     let totalQuantity = 0;
+    {
+    }
     this.cart.forEach((kanapFormLS) => {
       totalQuantity += Number(kanapFormLS.quantity);
     });
-    document.getElementById("totalQuantity").textContent = totalQuantity;
+    document.getElementById('totalQuantity').textContent = totalQuantity;
   }
-  
-  async checkFields() {
+
+  /**
+   * Handle the form with regex
+   * @return {Boolean} - Return true if form fields are valid
+   */
+  checkFields() {
     try {
-      const firstnameDom = document.getElementById('firstName');
-      const lastnameDom = document.getElementById('lastName');
-      const addressDom = document.getElementById('address');
-      const cityDom = document.getElementById('city');
-      const emailDom = document.getElementById('email');
-  
-      // TODO : longueur de chaîne, chaine composée
       const regexLettersOnly = /[a-zA-Z\-\s]{3,20}/;
-      // regexLettersOnly.match(firstname.value)
       const regexAddress = /[\w\s\,\-\']{2,80}/;
-      // email: chaine de caractère de a à z + numéro + @ + nom de domaine + . + (com|fr)
       const regexEmail = /[\w\+-]{2,40}@[\w-]{2,60}\.[a-z]{2,15}/;
-  
-      // Mettre les constantes dans un tableau
-      // Parcourir le tableau
-      // Effectuer à chaque index leurs traitements
-  
+
       const allDatas = [
         {
-          domElement: "firstName",
-          domElementError: "firstNameErrorMsg",
-          errorContent: "Veuillez saisir un prénom",
+          domElement: 'firstName',
+          domElementError: 'firstNameErrorMsg',
+          errorContent: 'Veuillez saisir un prénom',
           regexpToUse: regexLettersOnly,
         },
         {
-          domElement: "lastName",
-          domElementError: "lastNameErrorMsg",
-          errorContent: "Veuillez saisir un nom",
+          domElement: 'lastName',
+          domElementError: 'lastNameErrorMsg',
+          errorContent: 'Veuillez saisir un nom',
           regexpToUse: regexLettersOnly,
         },
         {
-          domElement: "address",
-          domElementError: "addressErrorMsg",
-          errorContent: "Veuillez saisir une adresse",
+          domElement: 'address',
+          domElementError: 'addressErrorMsg',
+          errorContent: 'Veuillez saisir une adresse',
           regexpToUse: regexAddress,
         },
         {
-          domElement: "city",
-          domElementError: "cityErrorMsg",
-          errorContent: "Veuillez saisir une ville",
+          domElement: 'city',
+          domElementError: 'cityErrorMsg',
+          errorContent: 'Veuillez saisir une ville',
           regexpToUse: regexLettersOnly,
         },
         {
-          domElement: "email",
-          domElementError: "emailErrorMsg",
-          errorContent: "Veuillez saisir une adresse mail",
+          domElement: 'email',
+          domElementError: 'emailErrorMsg',
+          errorContent: 'Veuillez saisir une adresse mail',
           regexpToUse: regexEmail,
         },
       ];
-  
-      const inputValid = "2px solid green";
-      const inputInvalid = "2px solid red";
+
+      const inputValid = '2px solid green';
+      const inputInvalid = '2px solid red';
       let hasError = false;
-      
+
       allDatas.forEach((data) => {
         const domElementError = document.getElementById(data.domElementError);
         const domElement = document.getElementById(data.domElement);
         const valueElement = domElement.value;
         const isValid = data.regexpToUse.test(valueElement);
-        domElementError.textContent = "";
+        domElementError.textContent = '';
         domElement.style.border = inputValid;
         if (!isValid) {
           domElementError.textContent = data.errorContent;
@@ -242,46 +259,55 @@ export default class Cart {
           hasError = true;
         }
       });
-      
-      if (hasError) {
-        throw new Error('Le script ne continu pas');
-      }
-      
 
-      const allKanapInCart = this.cart.map((kanap) => kanap.id);
-  
-      const order = {
-        contact: {
-          firstName: firstnameDom.value,
-          lastName: lastnameDom.value,
-          address: addressDom.value,
-          city: cityDom.value,
-          email: emailDom.value,
-        },
-        products: allKanapInCart,
-      };
-
-  
-      if (this.cart.length === 0) {
-        createNotification('Veuillez mettre au moins un article !', false);
-        throw new Error('Le script ne continu pas');
-      } else {
-        console.log(this.cart);
-        const sendOrder = await fetch("http://localhost:3000/api/products/order", {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(order),
-        });
-        const response = await sendOrder.json();
-        const orderId = response.orderId;
-        localStorage.clear();
-        window.location.href = `./confirmation.html?orderId=${orderId}`;
-      }
+      return !hasError;
     } catch (error) {
       console.error(error);
+    }
+  }
+
+  /**
+   * Post an order and get an orderId
+   */
+  async postOrder() {
+    const firstnameDom = document.getElementById('firstName');
+    const lastnameDom = document.getElementById('lastName');
+    const addressDom = document.getElementById('address');
+    const cityDom = document.getElementById('city');
+    const emailDom = document.getElementById('email');
+
+    const allKanapInCart = this.cart.map((kanap) => kanap.id);
+
+    const order = {
+      contact: {
+        firstName: firstnameDom.value,
+        lastName: lastnameDom.value,
+        address: addressDom.value,
+        city: cityDom.value,
+        email: emailDom.value,
+      },
+      products: allKanapInCart,
+    };
+
+    if (this.cart.length === 0) {
+      createNotification('Veuillez mettre au moins un article !', false);
+      throw new Error('Le script ne continu pas');
+    } else {
+      const sendOrder = await fetch(
+        'http://localhost:3000/api/products/order',
+        {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(order),
+        }
+      );
+      const response = await sendOrder.json();
+      const orderId = response.orderId;
+      localStorage.clear();
+      window.location.href = `./confirmation.html?orderId=${orderId}`;
     }
   }
 
