@@ -65,10 +65,11 @@ export default class Product {
       const id = this.kanapData._id;
       const colour = document.getElementById('colors').value;
       const quantity = Number(document.getElementById('quantity').value);
-        
-      if (this.checkColorIsValid(colour) === false && this.checkQuantityIsValid(quantity) === false || this.checkQuantityIsValid(quantity) === false || this.checkColorIsValid(colour) === false) {
-        return;
-      };
+      
+      const isQuantityValid = this.checkQuantityIsValid(quantity)
+      const isColorValid = this.checkColorIsValid(colour)
+
+      if (!isColorValid || !isQuantityValid) return;
       
       const productToAddToCart = {
         id,
