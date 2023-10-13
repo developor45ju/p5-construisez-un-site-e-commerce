@@ -30,6 +30,7 @@ export default class Product {
       .appendChild(newErrorMessage);
       return false;
     }
+    return true;
   }
   
   /**
@@ -53,6 +54,7 @@ export default class Product {
         .appendChild(newErrorMessage);
       return false;
     }
+    return true;
   }
 
   /**
