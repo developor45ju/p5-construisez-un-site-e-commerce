@@ -205,9 +205,9 @@ export default class Cart {
    */
   checkFields() {
     try {
-      const regexLettersOnly = /[a-zA-Z\-\s]{3,20}/;
-      const regexAddress = /[\w\s\,\-\']{2,80}/;
-      const regexEmail = /[\w\+-]{2,40}@[\w-]{2,60}\.[a-z]{2,15}/;
+      const regexLettersOnly = /^[a-zA-Z\-\s]{3,20}$/;
+      const regexAddress = /^[\w\s\,\-\']{2,80}$/;
+      const regexEmail = /^[\w\+-]{2,40}@[\w-]{2,60}\.[a-z]{2,15}$/;
 
       const allDatas = [
         {
